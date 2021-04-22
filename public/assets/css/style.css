@@ -1,0 +1,22 @@
+.letter {
+  border-radius: 50% !important;
+}
+
+.tag {
+  padding: 1px 5px;
+  border-radius: 10px;
+}
+
+.tag.tag-sm {
+  font-size: 8pt;
+}
+
+.tag.tag-sm.tag-view i {
+  display: none;
+}
+
+.selected-tags {
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
