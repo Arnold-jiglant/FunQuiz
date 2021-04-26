@@ -1,5 +1,9 @@
 <template>
-    <router-view/>
+    <transition mode="out-in"
+    enter-active-class="animate__animated animated--fade-in"
+    leave-active-class="animate_animated animated--fade-out">
+        <router-view/>
+    </transition>
 </template>
 
 <script>
@@ -12,6 +16,6 @@
     }
 </script>
 
-<style scoped>
+<style>
 
 </style>

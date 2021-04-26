@@ -2,115 +2,124 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <h3 class="text-dark mb-1">Tags</h3>
+                <h3 class="text-dark mb-1">Tags <i class="fa fa-angle-double-right"/> <span class="text-muted">{{selectedLetter}}</span>
+                </h3>
             </div>
             <div class="col text-right">
-                <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#add-tag-modal">
+                <button class="btn btn-primary btn-sm" type="button"
+                        @click="showModal=true">
                     <i class="fa fa-plus"/>&nbsp;Add
                 </button>
             </div>
         </div>
         <div class="tags-container p-2 text-center mb-2">
-            <button class="btn btn-outline-primary active btn-sm m-1 font-weight-bold letter" type="button">A</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold letter" type="button">B</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold letter"
-                    type="button">C
-            </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold letter" type="button">D</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold letter" type="button">E</button>
             <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">F
+                    type="button" :class="{active:selectedLetter==null}"
+                    @click="selectedLetter=null">All
             </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">G</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">H</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">I
+            <button v-for="letter in letters"
+                    class="btn btn-outline-primary btn-sm m-1 font-weight-bold letter"
+                    type="button"
+                    :class="{active:letter==selectedLetter}"
+                    @click="selectedLetter=letter">{{letter}}
             </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">J</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">K</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">L
-            </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">M</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">N</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">O
-            </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">P</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">Q</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">R
-            </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">S</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">T</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">U
-            </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">V</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">W</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold"
-                    type="button">X
-            </button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">Y</button>
-            <button class="btn btn-outline-primary btn-sm m-1 font-weight-bold" type="button">Z</button>
         </div>
         <div class="letters-container p-2 mb-1">
-            <button class="btn btn-success btn-sm m-1 tag" type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
-            <button class="btn btn-success btn-sm m-1 tag" type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
-            <button class="btn btn-success btn-sm m-1 tag"
-                    type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
-            <button class="btn btn-success btn-sm m-1 tag" type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
-            <button class="btn btn-success btn-sm m-1 tag" type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
-            <button
-                class="btn btn-success btn-sm m-1 tag" type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
-            <button class="btn btn-success btn-sm m-1 tag" type="button">Agriculture&nbsp;&nbsp;<span>20</span></button>
+            <button v-for="tag in tags"
+                    class="btn btn-outline-dark btn-sm m-1 tag"
+                    type="button" @dblclick="editTag(tag)"
+            >{{tag.name}}&nbsp;&nbsp;<span v-if="tag.topic_count>0">{{tag.topic_count}}</span>
+            </button>
         </div>
-        <div class="row">
+        <div v-if="meta.total>0" class="row">
             <div class="col-md-6 align-self-center">
-                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of
-                    27</p>
+                <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing
+                    {{meta.from}} to {{meta.to}}
+                    of {{meta.total}}</p>
             </div>
             <div class="col-md-6">
                 <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
                     <ul class="pagination">
-                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span
-                            aria-hidden="true">«</span></a></li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span
-                            aria-hidden="true">»</span></a></li>
+                        <li class="page-item" :class="{disabled:!links.prev}">
+                            <button class="page-link" aria-label="Previous"
+                                    @click="fetchTags(links.prev)">
+                                <span aria-hidden="true">«</span>
+                            </button>
+                        </li>
+                        <li class="page-item"><a class="page-link">{{meta.current_page}}/{{meta.last_page}}</a></li>
+                        <li class="page-item" :class="{disabled:!links.next}">
+                            <button class="page-link" aria-label="Next"
+                                    @click="fetchTags(links.next)">
+                                <span aria-hidden="true">»</span>
+                            </button>
+                        </li>
                     </ul>
                 </nav>
             </div>
         </div>
-        <div class="modal fade" role="dialog" tabindex="-1" id="add-tag-modal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Add Tag</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">×</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group"><label for="username"><strong>Name</strong></label><input
-                                class="form-control form-control-sm" type="text" placeholder="tag name"></div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-light btn-sm" type="button" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary btn-sm" type="button">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <tag-modal v-if="selectedTag && showModal" :tag="selectedTag" @modal_closed="modalClosed"
+                   :edit_mode="selectedTag!=null"/>
+        <tag-modal v-else-if="showModal" @modal_closed="modalClosed"/>
     </div>
 </template>
 
 <script>
+    import TagModal from "./modals/TagModal";
+
     export default {
-        name: "Tags"
+        data() {
+            return {
+                letters: [],
+                tags: [],
+                links: {},
+                meta: {},
+                selectedLetter: null,
+                selectedTag: null,
+                showModal: false,
+            }
+        },
+        components: {
+            TagModal
+        },
+        watch: {
+            selectedLetter: function () {
+                this.fetchTags();
+            }
+        },
+        methods: {
+            fetchTags: function (url = 'v1/admin/tags') {
+                window.axios.get(url,
+                    {
+                        params: {
+                            tag: this.selectedLetter
+                        }
+                    })
+                    .then(resp => {
+                        console.log(resp.data);
+                        this.tags = resp.data.data;
+                        this.links = resp.data.links;
+                        this.meta = resp.data.meta;
+                    })
+                    .catch(error => console.log(error))
+            },
+            addTag: function () {
+                this.showModal = true;
+            },
+            editTag: function (tag) {
+                this.selectedTag = tag;
+                this.showModal = true;
+            },
+            modalClosed: function () {
+                this.showModal = false;
+                this.selectedTag = null;
+            }
+        },
+        created() {
+            for (let i = "A".charCodeAt(0); i <= "Z".charCodeAt(0); i++) {
+                this.letters.push(String.fromCharCode(i))
+            }
+            this.fetchTags();
+        }
     }
 </script>
 

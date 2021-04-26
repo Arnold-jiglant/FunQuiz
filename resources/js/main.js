@@ -5,6 +5,7 @@ Vue.component('app-sidebar-nav', require('./components/admin/shared/SideBarNav')
 Vue.component('app-topbar-nav', require('./components/admin/shared/TopNavBar').default);
 Vue.component('app-content', require('./components/App').default);
 
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({

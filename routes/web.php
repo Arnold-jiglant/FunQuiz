@@ -25,6 +25,11 @@ Route::get('/home', function () {
     return "<h1>Under Maintenance</h1>";
 })->name('home')->middleware('auth');
 
+Route::get('testing', function () {
+    return $tag = \App\Tag::create(['name'=>'Testing','user_id'=>1]);
+});
+
+
 Route::name('admin')->middleware('auth')->get('/admin/{vue_capture?}', function () {
     return view('admin.index');
 })->where('vue_capture', '[\/\w\.-]*');

@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('password');
-            $table->string('remember_token');
+            $table->string('remember_token')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->integer('role_id')->default(\App\Role::PLAYER);
             $table->integer('status')->default(\App\User::STATUS_ACTIVE);

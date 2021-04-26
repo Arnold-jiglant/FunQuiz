@@ -12,4 +12,4 @@ mix.disableSuccessNotifications();
  |
  */
 
-mix.js('resources/js/app.js', 'public/js');
+mix.js('resources/js/app.js', 'public/js').sass('resources/sass/animate.scss', 'public/css/animate.css');

@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
 
     public const STATUS_ACTIVE = 1;
@@ -40,4 +41,33 @@ class User extends Authenticatable
     protected $casts = [
         'verified_at' => 'datetime',
     ];
+
+    /* ATTRIBUTES */
+    public function getIsActiveAttribute()
+    {
+        return $this->status == User::STATUS_ACTIVE;
+    }
+
+    /* SCOPE */
+
+    //Users
+    public function scopeUsers($q)
+    {
+        return $q->where('role_id', Role::ADMIN);
+    }
+
+    //Players
+    public function scopePlayers($q)
+    {
+        return $q->where('role_id', Role::PLAYER);
+    }
+
+    //Filter
+    public function scopeFilter($q, $filter)
+    {
+        return $q->where('username', 'like', "%$filter%")
+            ->orWhere('email', 'like', "%$filter%")
+            ->orWhere('phone', 'like', "%$filter%")
+            ->orderByDesc('created_at');
+    }
 }

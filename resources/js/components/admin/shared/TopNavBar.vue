@@ -135,12 +135,13 @@
                 <li class="nav-item dropdown no-arrow" role="presentation">
                     <div class="nav-item dropdown no-arrow" style="cursor: pointer">
                         <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
-                            <span class="d-none d-lg-inline mr-2 text-gray-600 small">Valerie Luna</span>
+                            <span class="d-none d-lg-inline mr-2 text-gray-600 small">{{user.name}}</span>
                             <img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg">
                         </a>
                         <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in" role="menu">
                             <router-link class="dropdown-item" role="presentation" to="/profile">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"/>&nbsp;Profile</router-link>
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"/>&nbsp;Profile
+                            </router-link>
                             <a class="dropdown-item" role="presentation">
                                 <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"/>&nbsp;Settings</a>
                             <div class="dropdown-divider"></div>
@@ -156,7 +157,20 @@
 
 <script>
     export default {
-        name: "TopNavBar"
+        data() {
+            return {
+                user: {}
+            };
+        },
+        created() {
+            window.axios.get('/v1/user')
+                .then(response => {
+                    this.user = response.data.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
     }
 </script>
 
