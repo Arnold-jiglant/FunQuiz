@@ -26,7 +26,8 @@ Route::get('/home', function () {
 })->name('home')->middleware('auth');
 
 Route::get('testing', function () {
-    return $tag = \App\Tag::create(['name'=>'Testing','user_id'=>1]);
+    $topic = \App\Topic::find(1);
+    return $topic->creator;
 });
 
 

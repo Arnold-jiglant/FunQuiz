@@ -18,14 +18,14 @@
                         </div>
                         <div class="form-group"><label><strong>Name</strong></label>
                             <input class="form-control form-control-sm"
-                                   type="text" placeholder="tag name" v-model="tag.name">
+                                   type="text" placeholder="tag name" v-model.lazy="tag.name">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light btn-sm" type="button" data-dismiss="modal">Close</button>
                     <button v-if="edit_mode" class="btn btn-primary btn-sm"
-                            type="button" @click="console.log('updating')">Update
+                            type="button" @click="updateTag">Update
                     </button>
                     <button v-else class="btn btn-primary btn-sm" type="button" @click="addTag">Add</button>
                 </div>

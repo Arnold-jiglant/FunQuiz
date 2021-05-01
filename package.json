@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "animate.css": "^4.1.1",
-        "vue-router": "^3.5.1"
+        "vue-router": "^3.5.1",
+        "vue-spinkit": "^1.7.12"
     }
 }

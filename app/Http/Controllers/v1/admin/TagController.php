@@ -44,18 +44,19 @@ class TagController extends Controller
             ]);
         }
 
-        $tag = Tag::create(['name'=>$request->get('name'),'user_id'=>Auth::id()]);
+        $tag = Tag::create(['name' => $request->get('name'), 'user_id' => Auth::id()]);
         return response()->json([
             new TagResource($tag)
         ]);
     }
+
     /*
     * UPDATE TAG
     * */
-    public function update(Request $request,Tag $tag)
+    public function update(Request $request, Tag $tag)
     {
         $validator = Validator::make($request->all(), [
-            'name' =>[
+            'name' => [
                 'required',
                 Rule::unique('tags')->ignore($tag->id)
             ],
@@ -67,11 +68,25 @@ class TagController extends Controller
             ]);
         }
 
-        $tag->update(['name'=>$request->get('name')]);
+        $tag->update(['name' => $request->get('name')]);
         $tag->refresh();
         return response()->json([
             new TagResource($tag)
         ]);
+    }
+
+    /*
+     * SEARCH TAG
+     */
+    public function search($search)
+    {
+        $tags = Tag::where('name', 'like', $search . '%')->limit(15)->get();
+//        $tags = Tag::all();
+        $tags->transform(function ($tag, $key) {
+            return new TagResource($tag);
+        });
+
+        return new DataCollector($tags);
     }
 
 }

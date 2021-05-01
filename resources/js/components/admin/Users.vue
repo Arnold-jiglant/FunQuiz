@@ -82,7 +82,8 @@
                                         <span aria-hidden="true">«</span>
                                     </button>
                                 </li>
-                                <li class="page-item"><a class="page-link">{{meta.current_page}}/{{meta.last_page}}</a></li>
+                                <li class="page-item"><a class="page-link">{{meta.current_page}}/{{meta.last_page}}</a>
+                                </li>
                                 <li class="page-item" :class="{disabled:!links.next}">
                                     <button class="page-link" aria-label="Next"
                                             @click="fetchUsers(links.next)">
@@ -114,6 +115,7 @@
                 filter: null,
                 selectedUser: null,
                 showModal: false,
+                isLoading: false,
             };
         },
         components: {
@@ -129,6 +131,7 @@
         },
         methods: {
             fetchUsers: function (url = '/v1/admin/users') {
+                this.isLoading = true;
                 window.axios.get(url, {
                     params: {
                         per_page: this.per_page,
@@ -141,6 +144,8 @@
                     this.meta = response.data.meta;
                 }).catch(error => {
                     console.log(error)
+                }).then(() => {
+                    this.isLoading = false;
                 });
             },
             addUser: function () {
