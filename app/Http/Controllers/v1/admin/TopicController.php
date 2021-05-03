@@ -61,10 +61,7 @@ class TopicController extends Controller
         $topic = Topic::create(['name' => $request->get('name'), 'user_id' => Auth::id()]);
 
         //attaching tags
-        $tags = collect();
-        foreach ($request->get('tags') as $tag) {
-            $tags->add($tag);
-        }
+        $tags = explode(',', $request->get('tags'));
         $topic->tags()->sync($tags);
 
         //Save image file
@@ -79,12 +76,19 @@ class TopicController extends Controller
     }
 
     /*
+     * GET TOPIC
+     */
+    public function show(Topic $topic)
+    {
+        return new TopicResource($topic);
+    }
+
+    /*
      *UPDATE TOPIC
      */
 
-    public function update(Request $request, Topic $topic)
+    public function update(Topic $topic, Request $request)
     {
-        return $request->all();
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
@@ -104,10 +108,7 @@ class TopicController extends Controller
         $topic->update(['name' => $request->get('name')]);
 
         //attaching tags
-        $tags = collect();
-        foreach ($request->get('tags') as $tag) {
-            $tags->add($tag);
-        }
+        $tags = explode(',', $request->get('tags'));
         $topic->tags()->sync($tags);
 
         //change Image image file
@@ -117,10 +118,12 @@ class TopicController extends Controller
             if (File::exists($path)) {
                 unlink($path);
             }
+            $topic->image()->delete();
+
             $path = $request->file('image')
                 ->storeAs('images/topic', $topic->id . "_" . Str::random(5) . '.' . $request->file('image')->extension());
 
-            $topic->image()->update(['path' => $path]);
+            $topic->image()->create(['path' => $path]);
         }
 
         return response()->json([

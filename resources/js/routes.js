@@ -6,10 +6,10 @@ import Tags from "./components/admin/Tags"
 import Profile from "./components/admin/Profile"
 
 export const routes = [
-    {path: '/users', component: Users},
-    {path: '/players', component: Players},
-    {path: '/topic-questions', component: TopicQuestions},
-    {path: '/topics', component: Topics},
-    {path: '/tags', component: Tags},
-    {path: '/profile', component: Profile},
+    {path: '/users', component: Users,name:'users'},
+    {path: '/players', component: Players,name:'players'},
+    {path: '/topic/questions/:id', component: TopicQuestions,name:'topic.questions'},
+    {path: '/topics', component: Topics,name:'topics'},
+    {path: '/tags', component: Tags,name:'tags'},
+    {path: '/profile/:id', component: Profile,name:'profile'},
 ];

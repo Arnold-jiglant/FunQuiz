@@ -40,12 +40,20 @@ Route::prefix('v1')->group(function () {
                 Route::get('/tags', 'TagController@index')->name('admin.tags');
                 Route::post('/tag', 'TagController@store')->name('admin.tag.store');
                 Route::put('/tag/{tag}', 'TagController@update')->name('admin.tag.update');
+                Route::delete('/tag/{tag}', 'TagController@destroy')->name('admin.tag.destroy');
                 Route::get('/search/tag/{search}', 'TagController@search')->name('admin.tag.search');
 
                 //Topics
                 Route::get('/topics', 'TopicController@index')->name('admin.topics');
+                Route::get('/topic/{topic}', 'TopicController@show')->name('admin.topic.get');
                 Route::post('/topic', 'TopicController@store')->name('admin.topic.store');
-                Route::put('/topic/{topic}', 'TopicController@update')->name('admin.topic.update');
+                Route::post('/update/topic/{topic}', 'TopicController@update')->name('admin.topic.update');
+
+                //Questions
+                Route::get('/{topic}/questions', 'QuestionController@index')->name('admin.questions');
+                Route::post('/{topic}/question', 'QuestionController@store')->name('admin.question.store');
+                Route::post('/update/question/{question}', 'QuestionController@update')->name('admin.question.update');
+
             });
     });
 });

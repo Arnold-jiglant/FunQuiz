@@ -23,6 +23,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <button v-if="edit_mode" class="btn btn-danger btn-sm"
+                            type="button" @click="deleteTag">Delete
+                    </button>
                     <button class="btn btn-light btn-sm" type="button" data-dismiss="modal">Close</button>
                     <button v-if="edit_mode" class="btn btn-primary btn-sm"
                             type="button" @click="updateTag">Update
@@ -79,12 +82,28 @@
                     name: this.tag.name,
                 };
 
-                window.axios.put('v1/admin/tag/'+this.tag.id, tag)
+                window.axios.put('v1/admin/tag/' + this.tag.id, tag)
                     .then(response => {
                         console.log('response', response.data);
                         if (response.data.error) {
                             this.errors = response.data.error;
                         } else {
+                            $('#tag-modal').modal('hide');
+                        }
+                    })
+                    .catch(error => {
+                        console.log('error', error);
+                    });
+            },
+            deleteTag: function () {
+                if (!confirm("Delete this Tag")) return;
+                window.axios.delete('v1/admin/tag/' + this.tag.id)
+                    .then(response => {
+                        console.log('response', response.data);
+                        if (response.data.error) {
+                            this.errors = response.data.error;
+                        } else {
+                            this.$emit('delete_tag', this.tag);
                             $('#tag-modal').modal('hide');
                         }
                     })

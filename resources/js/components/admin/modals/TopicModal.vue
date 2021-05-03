@@ -158,12 +158,11 @@
                 let topic = new FormData();
                 topic.append('name', this.topic.name);
                 topic.append('image', this.selectedImage);
+                let tags = [];
                 this.topic.tags.forEach(function (item) {
-                    let i = 0;
-                    topic.append('tags[' + i + ']', item.id);
-                    i++;
+                    tags.push(item.id);
                 });
-
+                topic.append('tags', tags);
 
                 window.axios.post('v1/admin/topic', topic, {
                     headers: {
@@ -202,16 +201,18 @@
                     $('#search-tag').focus();
                     return;
                 }
-                let topic = new FormData();
-                topic.append('name', this.topic.name);
-                if (this.imageChanged) topic.append('image', this.selectedImage);
+
+                let newTopic = new FormData();
+                newTopic.append('name', this.topic.name);
+                if (this.imageChanged) newTopic.append('image', this.selectedImage);
+                let tags = [];
                 this.topic.tags.forEach(function (item) {
-                    let i = 0;
-                    topic.append('tags[' + i + ']', item.id);
-                    i++;
+                    tags.push(item.id);
                 });
 
-                window.axios.put('v1/admin/topic/' + this.topic.id, topic, {
+                newTopic.append('tags', tags);
+
+                window.axios.post('v1/admin/update/topic/' + this.topic.id, newTopic, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

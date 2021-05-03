@@ -28,7 +28,7 @@
             <button v-for="tag in tags"
                     class="btn btn-outline-dark btn-sm m-1 tag"
                     type="button" @dblclick="editTag(tag)"
-            >{{tag.name}}&nbsp;&nbsp;<span v-if="tag.topic_count>0">{{tag.topic_count}}</span>
+            >{{tag.name}}&nbsp;&nbsp;<span v-if="tag.topic_count>0" class="text-warning">{{tag.topic_count}}</span>
             </button>
         </div>
         <div v-if="meta.total>0" class="row">
@@ -58,7 +58,7 @@
             </div>
         </div>
         <tag-modal v-if="selectedTag && showModal" :tag="selectedTag" @modal_closed="modalClosed"
-                   :edit_mode="selectedTag!=null"/>
+                   :edit_mode="selectedTag!=null" @delete_tag="deleteTag($event)"/>
         <tag-modal v-else-if="showModal" @modal_closed="modalClosed"/>
     </div>
 </template>
@@ -108,6 +108,11 @@
             editTag: function (tag) {
                 this.selectedTag = tag;
                 this.showModal = true;
+            },
+            deleteTag: function (tag) {
+                this.tags = this.tags.filter(function (item) {
+                    return item.id !== tag.id;
+                });
             },
             modalClosed: function () {
                 this.showModal = false;

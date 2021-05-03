@@ -17,16 +17,17 @@ class TopicResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'followers' => $this->followers()->count(),
-            'qns_count' => $this->questions()->count(),
+            'followers' => number_format($this->followers()->count()),
+            'qns_count' => number_format($this->questions()->count()),
             'tags' => $this->tags->transform(function ($tag) {
                 return new TagResource($tag);
             }),
-            'image_url' => $this->image ? route('image', $this->image->id) : route('image','none'),
+            'image_url' => $this->image ? route('image', $this->image->id) : route('image', 'none'),
             'creator' => [
                 'id' => $this->creator->id,
-                'username' => $this->creator->username,
+                'name' => $this->creator->username,
             ],
+            'create_date' => $this->created_at->format('d M Y')
         ];
     }
 }

@@ -53,6 +53,10 @@
                             <td>{{topic.qns_count}}</td>
                             <td>{{topic.tags.length}}</td>
                             <td>
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                        @click="$router.push({name:'topic.questions',params:{id:topic.id}})">
+                                    <i class="fa fa-list"></i>&nbsp;view
+                                </button>
                                 <button class="btn btn-outline-primary btn-sm" type="button" @click="editTopic(topic)">
                                     <i class="fa fa-pencil"></i>&nbsp;edit
                                 </button>
@@ -75,7 +79,7 @@
                             <ul class="pagination">
                                 <li class="page-item" :class="{disabled:!links.prev}">
                                     <button class="page-link" aria-label="Previous"
-                                            @click="fetchUsers(links.prev)">
+                                            @click="fetchTopics(links.prev)">
                                         <span aria-hidden="true">«</span>
                                     </button>
                                 </li>
@@ -83,7 +87,7 @@
                                 </li>
                                 <li class="page-item" :class="{disabled:!links.next}">
                                     <button class="page-link" aria-label="Next"
-                                            @click="fetchUsers(links.next)">
+                                            @click="fetchTopics(links.next)">
                                         <span aria-hidden="true">»</span>
                                     </button>
                                 </li>
@@ -94,7 +98,7 @@
             </div>
         </div>
         <topic-modal v-if="selectedTopic!=null && showModal"
-                    :topic="selectedTopic" @modal_closed="modalClosed" edit_mode @fetch_topics="fetchTopics"/>
+                     :topic="selectedTopic" @modal_closed="modalClosed" edit_mode @fetch_topics="fetchTopics"/>
         <topic-modal v-else-if="showModal" @modal_closed="modalClosed" @fetch_topics="fetchTopics"/>
     </div>
 </template>

@@ -10,6 +10,9 @@ class Topic extends Model
 
 
     //SCOPE
+    /*
+     * Topic Filter
+     * */
     public function scopeFilter($q, $filter)
     {
         return $q->where('name', 'like', "%$filter%");

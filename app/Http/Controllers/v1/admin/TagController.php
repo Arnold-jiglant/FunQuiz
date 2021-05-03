@@ -89,4 +89,17 @@ class TagController extends Controller
         return new DataCollector($tags);
     }
 
+    /*
+     * DELETE TAG
+     */
+    public function destroy(Tag $tag)
+    {
+//        return 'deleting';
+        $tag->topics()->detach();
+        $tag->delete();
+        return response()->json([
+            'success' => 'Tag Deleted'
+        ]);
+    }
+
 }
