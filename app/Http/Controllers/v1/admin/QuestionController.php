@@ -8,6 +8,7 @@ use App\Http\Resources\QuestionResource;
 use App\Question;
 use App\Topic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -54,17 +55,76 @@ class QuestionController extends Controller
 
 
         $question = $topic->questions()->save(new Question([
-            'body'=>$request->get('body'),
-            'answers'=>$request->get('answers'),
+            'body' => $request->get('body'),
+            'answers' => $request->get('answers'),
         ]));
 
         //save image
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $path = $request->file('image')
                 ->storeAs('images/question', $question->id . "_" . Str::random(5) . '.' . $request->file('image')->extension());
 
             $question->image()->create(['path' => $path]);
         }
         return new QuestionResource($question);
+    }
+
+    /*
+     * UPDATE QUESTION
+     */
+    public function update(Request $request, Question $question)
+    {
+        $validator = Validator::make($request->all(), [
+            'body' => 'required',
+            'answers' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->all()
+            ]);
+        }
+
+
+        $question->update([
+            'body' => $request->get('body'),
+            'answers' => $request->get('answers'),
+        ]);
+
+        if (!$request->has('preserve')) {
+            //delete old image if any
+            if ($question->image()->count() > 0) {
+                $path = storage_path('app/' . $question->image->path);
+                if (File::exists($path)) {
+                    unlink($path);
+                }
+                $question->image()->delete();
+            }
+
+            //add image if present
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')
+                    ->storeAs('images/question', $question->id . "_" . Str::random(5) . '.' . $request->file('image')->extension());
+
+                $question->image()->create(['path' => $path]);
+            }
+        }
+
+        return new QuestionResource($question);
+    }
+
+    /*
+     * DELETE QUESTION
+     */
+    public function destroy(Question $question)
+    {
+        if ($question->image()->count() > 0) {
+            $question->image()->delete();
+        }
+
+        $question->delete();
+        return response()->json([
+            'success' => 'Question deleted'
+        ]);
     }
 }

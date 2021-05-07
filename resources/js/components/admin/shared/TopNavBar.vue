@@ -136,10 +136,10 @@
                     <div class="nav-item dropdown no-arrow" style="cursor: pointer">
                         <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
                             <span class="d-none d-lg-inline mr-2 text-gray-600 small">{{user.name}}</span>
-                            <img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg">
+                            <img class="border rounded-circle img-profile" :src="user.image_url">
                         </a>
                         <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in" role="menu">
-                            <router-link class="dropdown-item" role="presentation" to="/profile">
+                            <router-link class="dropdown-item" role="presentation" :to="{name:'profile',params:{id:user.id}}">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"/>&nbsp;Profile
                             </router-link>
                             <a class="dropdown-item" role="presentation">

@@ -40,7 +40,7 @@
                             </div>
                             <input class="form-control form-control-sm" type="text" id="search-tag"
                                    placeholder="search tag" @keyup="searchTags">
-                            <div v-if="foundedTags.length" id="suggestion-box">
+                            <div v-if="foundedTags.length" id="suggestion-box" style="z-index: 5">
                                 <ul id="tag-list" class="shadow">
                                     <li v-for="tag in foundedTags" @click="addTag(tag)">{{tag.name}}</li>
                                 </ul>

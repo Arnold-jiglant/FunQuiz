@@ -4,10 +4,15 @@ namespace App\Http\Controllers\v1\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCollector;
+use App\Http\Resources\TagResource;
+use App\Http\Resources\TopicResource;
 use App\Http\Resources\UserProfileResource;
+use App\Topic;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -67,10 +72,20 @@ class UserController extends Controller
             new UserProfileResource($user)
         ]);
     }
+
+    /*
+     * SHOW USER
+     */
+    public function show(User $user)
+    {
+        return new UserProfileResource($user);
+    }
+
+
     /*
      * UPDATE USER
      * */
-    public function update(Request $request,User $user)
+    public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
             'username' => 'required',
@@ -106,4 +121,51 @@ class UserController extends Controller
         ]);
     }
 
+    /*
+     * USER TOPICS
+     */
+    public function topics(User $user)
+    {
+        $topics = $user->topics()->orderByDesc('created_at')->paginate(10);
+        $topics->getCollection()->transform(function ($topic, $key) {
+            return new TopicResource($topic);
+        });
+        return new DataCollector($topics);
+    }
+
+    /*
+     * USER TAGS
+     */
+    public function tags(User $user)
+    {
+        $tags = $user->tags()->paginate(10);
+        $tags->getCollection()->transform(function ($tags, $key) {
+            return new TagResource($tags);
+        });
+        return new DataCollector($tags);
+    }
+
+    /*
+     * UPDATE IMAGE
+     */
+    public function updateImage(Request $request, User $user)
+    {
+        if (!$request->hasFile('image')) return response()->json([
+            'error' => 'Image file required'
+        ]);
+        //delete old image
+        if ($user->image()->count() > 0) {
+            $path = storage_path('app/' . $user->image->path);
+            if (File::exists($path)) {
+                unlink($path);
+            }
+            $user->image()->delete();
+        }
+        $path = $request->file('image')
+            ->storeAs('images/user', $user->id . "_" . Str::random(5) . '.' . $request->file('image')->extension());
+
+        $image = $user->image()->create(['path' => $path]);
+
+        return route('image', $image->id);
+    }
 }

@@ -33,8 +33,14 @@ Route::prefix('v1')->group(function () {
             ->group(function () {
                 //User
                 Route::get('/users', 'UserController@index')->name('admin.users');
+                Route::get('/user/{user}', 'UserController@show')->name('admin.user.show');
                 Route::post('/user', 'UserController@store')->name('admin.user.store');
                 Route::put('/user/{user}', 'UserController@update')->name('admin.user.update');
+
+                //Profiling
+                Route::get('/user/{user}/topics','UserController@topics')->name('admin.user.topics');
+                Route::get('/user/{user}/tags','UserController@tags')->name('admin.user.tags');
+                Route::post('/user/{user}/update/image','UserController@updateImage')->name('admin.user.update.image');
 
                 //Tags
                 Route::get('/tags', 'TagController@index')->name('admin.tags');
@@ -53,6 +59,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('/{topic}/questions', 'QuestionController@index')->name('admin.questions');
                 Route::post('/{topic}/question', 'QuestionController@store')->name('admin.question.store');
                 Route::post('/update/question/{question}', 'QuestionController@update')->name('admin.question.update');
+                Route::delete('/question/{question}', 'QuestionController@destroy')->name('admin.question.destroy');
 
             });
     });

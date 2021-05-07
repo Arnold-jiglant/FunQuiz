@@ -112,11 +112,9 @@
                                 </ul>
                             </td>
                             <td>
-                                <button class="btn btn-outline-primary btn-sm" type="button"><i
-                                    class="fa fa-pencil"></i>&nbsp;edit
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm ml-1" type="button"><i
-                                    class="icon ion-android-delete"></i>&nbsp;delete
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                        @click="editQuestion(question)">
+                                    <i class="fa fa-pencil"/>&nbsp;edit
                                 </button>
                             </td>
                         </tr>
@@ -153,9 +151,10 @@
             </div>
         </div>
         <question-modal v-if="selectedQuestion && showModal" :topic="topic" :question="selectedQuestion"
-                        @modal_closed="modalClosed"
+                        @modal_closed="modalClosed" @fetch_questions="fetchQuestions"
                         :edit_mode="selectedQuestion!=null" @delete_question="deleteQuestion($event)"/>
-        <question-modal v-else-if="showModal" :topic="topic" @modal_closed="modalClosed"/>
+        <question-modal v-else-if="showModal" :topic="topic" @modal_closed="modalClosed"
+                        @fetch_questions="fetchQuestions"/>
     </div>
 </template>
 
@@ -225,8 +224,8 @@
             addQuestion: function () {
                 this.showModal = true;
             },
-            editQuestion: function (topic) {
-                this.selectedQuestion = topic;
+            editQuestion: function (question) {
+                this.selectedQuestion = question;
                 this.showModal = true;
             },
             deleteQuestion: function (question) {

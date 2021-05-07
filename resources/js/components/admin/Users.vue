@@ -33,7 +33,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                <loading-spinner v-if="isLoading"/>
+                <div v-else class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
                     <table class="table dataTable my-0" id="dataTable">
                         <thead>
                         <tr>
@@ -48,13 +49,17 @@
                         <tbody>
                         <tr v-for="user in users" :key="user.id">
                             <td><img class="rounded-circle mr-2" width="30" height="30"
-                                     src="assets/img/avatars/avatar1.jpeg">{{user.name}}
+                                     :src="user.image_url">{{user.name}}
                             </td>
                             <td>{{user.role}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.phone_number}}</td>
                             <td>{{user.isActive?"Active":"Inactive"}}</td>
                             <td>
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                        @click="$router.push({name:'profile',params:{id:user.id}})">
+                                    view
+                                </button>
                                 <button class="btn btn-outline-primary btn-sm" type="button" @click="editUser(user)">
                                     <i class="fa fa-pencil"></i>&nbsp;edit
                                 </button>

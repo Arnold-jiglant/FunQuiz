@@ -27,7 +27,7 @@
                                     {{hasImage?'Has Image':'No Image'}}</label>
                             </div>
                             <div v-if="hasImage" class="text-center border p-2 animate__animated animate__fadeIn">
-                                <img id="imagePreview" :src="question.image_url" class="rounded" width="200px" height="200px">
+                                <img id="imagePreview" class="rounded" width="200px" height="200px">
                                 <input type="file" ref="image" accept="image/*" style="visibility: hidden"
                                        @change="changeImage">
                                 <div class="mt-2">
@@ -59,6 +59,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button v-if="edit_mode" class="btn btn-danger btn-sm" type="button" @click="deleteQuestion">
+                        Delete
+                    </button>
                     <button class="btn btn-light btn-sm" type="button" data-dismiss="modal">Close</button>
                     <button v-if="edit_mode" class="btn btn-primary btn-sm" type="button" @click="updateQuestion">
                         Update
@@ -98,6 +101,7 @@
                 selectedImage: null,
                 hasImage: true,
                 selectedAnswer: 1,
+                imageChanged: false,
             }
         },
         methods: {
@@ -107,6 +111,7 @@
             changeImage: function () {
                 this.selectedImage = this.$refs.image.files[0];
                 this.hasImage = true;
+                this.imageChanged = true;
                 if (this.selectedImage) {
                     let reader = new FileReader();
                     let vm = this;
@@ -150,14 +155,13 @@
                 if (this.hasImage) question.append('image', this.selectedImage);
                 question.append('answers', JSON.stringify(this.question.answers));
 
-                window.axios.post('v1/admin/'+this.topic.id+'/question', question, {
+                window.axios.post('v1/admin/' + this.topic.id + '/question', question, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
                     .then(response => {
                         console.log('response', response.data);
-                        return;
                         if (response.data.error) {
                             this.errors = response.data.error;
                         } else {
@@ -170,8 +174,74 @@
                     });
             },
             updateQuestion: function () {
+                console.log('updating Question');
+                this.errors = [];
 
+                if ($.trim(this.question.body).length < 1) {
+                    this.errors.push('Enter the answer first');
+                    $('#answer-body').focus();
+                    return;
+                }
+                if (this.hasImage && this.imageChanged && this.selectedImage == null) {
+                    this.errors.push('Choose Image');
+                    $('#imagePreview').focus();
+                    return;
+                }
+
+                let check = false;
+                this.question.answers.forEach(answer => {
+                    this.selectedAnswer === answer.id ? answer.correct = true : answer.correct = false;
+                    if (answer.body.length < 1) {
+                        check = true;
+                    }
+                });
+                if (check) {
+                    this.errors.push('Enter all answers');
+                    return;
+                }
+
+                let question = new FormData();
+                question.append('body', this.question.body);
+                if (this.hasImage && !this.imageChanged) question.append('preserve', 1);
+                if (this.hasImage && this.imageChanged) question.append('image', this.selectedImage);
+                question.append('answers', JSON.stringify(this.question.answers));
+
+                window.axios.post('v1/admin/update/question/' + this.question.id, question, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                    .then(response => {
+                        console.log('response', response.data);
+                        // return;
+                        if (response.data.error) {
+                            this.errors = response.data.error;
+                        } else {
+                            this.$emit('fetch_questions');
+                            $('#question-modal').modal('hide');
+                        }
+                    })
+                    .catch(error => {
+                        console.log('error', error);
+                    });
             },
+            deleteQuestion: function () {
+                if (!confirm('Delete this question?')) return;
+                console.log('delete Question');
+                window.axios.delete('v1/admin/question/' + this.question.id)
+                    .then(response => {
+                        console.log('response', response.data);
+                        if (response.data.error) {
+                            this.errors = response.data.error;
+                        } else {
+                            this.$emit('delete_question', this.question);
+                            $('#question-modal').modal('hide');
+                        }
+                    })
+                    .catch(error => {
+                        console.log('error', error);
+                    });
+            }
         },
         mounted() {
             let question_modal = $('#question-modal');
@@ -180,7 +250,7 @@
             question_modal.on('hidden.bs.modal', function (e) {
                 vm.$emit('modal_closed');
             });
-            if (this.edit_mode) $('#imagePreview').attr('src', this.topic.image_url);
+            this.edit_mode && this.question.image_url ? $('#imagePreview').attr('src', this.question.image_url) : this.hasImage = false;
         }
     }
 </script>

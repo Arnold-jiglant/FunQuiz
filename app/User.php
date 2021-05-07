@@ -43,9 +43,16 @@ class User extends Authenticatable
     ];
 
     /* ATTRIBUTES */
+    //Is Active?
     public function getIsActiveAttribute()
     {
         return $this->status == User::STATUS_ACTIVE;
+    }
+
+    //Is Player?
+    public function getIsPlayerAttribute()
+    {
+        return $this->role_id == Role::PLAYER;
     }
 
     /* SCOPE */
@@ -69,5 +76,24 @@ class User extends Authenticatable
             ->orWhere('email', 'like', "%$filter%")
             ->orWhere('phone', 'like', "%$filter%")
             ->orderByDesc('created_at');
+    }
+
+    //RELATIONS
+    //Topics
+    public function topics()
+    {
+        return $this->hasMany(Topic::class);
+    }
+
+    //Tags
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    //Image
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'owner');
     }
 }

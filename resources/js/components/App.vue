@@ -2,7 +2,7 @@
     <transition mode="out-in"
     enter-active-class="animate__animated animated--fade-in"
     leave-active-class="animate_animated animated--fade-out">
-        <router-view/>
+        <router-view />
     </transition>
 </template>
 
@@ -10,8 +10,8 @@
     import AppPlayers from './admin/Players'
 
     export default {
-        components: {
-            // 'app-players': AppPlayers,
+        mounted() {
+            // this.$router.push({name:'dashboard'});
         }
     }
 </script>
